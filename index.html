@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CoffeeBeer Order V5</title>
+  <title>CoffeeBeer Order V6 V5</title>
   <style>
     :root{
       --bg:#f4f6fb; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
@@ -29,7 +29,7 @@
 </head>
 <body>
 <header>
-  <h1>CoffeeBeer Order V5</h1>
+  <h1>CoffeeBeer Order V6 V5</h1>
   <div class="sub">Καφέδες • Μπύρες • Αναψυκτικά • Μικρός / Μεγάλος μεζές</div>
 </header>
 <main>
@@ -121,29 +121,83 @@
 </main>
 
 <script>
-const KEY='coffeebeer_order_v1';
+const KEY='coffeebeer_order_v6';
 const defaultState={
   tableCount:20,
   currentTable:null,
   category:'Καφέδες',
   menu:[
-    {id:'coffee_ellinikos',cat:'Καφέδες',name:'Ελληνικός',price:1.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
-    {id:'coffee_frappe',cat:'Καφέδες',name:'Φραπέ',price:2.00,opts:['Σκέτος','Μέτριος','Γλυκός','Με γάλα','Χωρίς γάλα']},
-    {id:'coffee_freddo_espresso',cat:'Καφέδες',name:'Freddo Espresso',price:2.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
-    {id:'coffee_freddo_cappuccino',cat:'Καφέδες',name:'Freddo Cappuccino',price:2.80,opts:['Σκέτος','Μέτριος','Γλυκός']},
-    {id:'coffee_espresso',cat:'Καφέδες',name:'Espresso',price:1.80,opts:['Σκέτος','Μέτριος','Γλυκός']},
-    {id:'coffee_cappuccino',cat:'Καφέδες',name:'Cappuccino',price:2.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
-    {id:'beer_330',cat:'Μπύρες',name:'Μπύρα 330ml',price:2.50,opts:['Παγωμένη','Ποτήρι']},
-    {id:'beer_500',cat:'Μπύρες',name:'Μπύρα 500ml',price:3.50,opts:['Παγωμένη','Ποτήρι']},
-    {id:'beer_draft_small',cat:'Μπύρες',name:'Βαρελίσια μικρή',price:2.50,opts:['Παγωμένη','Ποτήρι']},
-    {id:'beer_draft_large',cat:'Μπύρες',name:'Βαρελίσια μεγάλη',price:4.00,opts:['Παγωμένη','Ποτήρι']},
-    {id:'soft_cola',cat:'Αναψυκτικά',name:'Coca-Cola',price:2.00,opts:['Κανονικό','Zero','Light','Με πάγο','Χωρίς πάγο']},
-    {id:'soft_orange',cat:'Αναψυκτικά',name:'Πορτοκαλάδα',price:2.00,opts:['Με ανθρακικό','Χωρίς ανθρακικό','Με πάγο','Χωρίς πάγο']},
-    {id:'soft_lemon',cat:'Αναψυκτικά',name:'Λεμονάδα',price:2.00,opts:['Με ανθρακικό','Χωρίς ανθρακικό','Με πάγο','Χωρίς πάγο']},
-    {id:'soft_soda',cat:'Αναψυκτικά',name:'Σόδα',price:2.00,opts:['Με πάγο','Χωρίς πάγο','Με λεμόνι']},
-    {id:'soft_water',cat:'Αναψυκτικά',name:'Νερό 500ml',price:0.50,opts:['Κρύο','Θερμοκρασία δωματίου']},
-    {id:'meze_small',cat:'Μεζές',name:'Μικρός μεζές',price:4.00,opts:['Κανονικός','Χωρίς πικάντικο','Έξτρα ψωμί']},
-    {id:'meze_large',cat:'Μεζές',name:'Μεγάλος μεζές',price:7.00,opts:['Κανονικός','Χωρίς πικάντικο','Έξτρα ψωμί']}
+    {id:'coffee_freddo_espresso',cat:'Καφέδες',name:'Freddo Espresso',price:4.00,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_freddo_cappuccino',cat:'Καφέδες',name:'Freddo Cappuccino',price:4.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_espresso_double',cat:'Καφέδες',name:'Espresso Διπλό',price:3.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_espresso_single',cat:'Καφέδες',name:'Espresso Μονό',price:3.00,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_cappuccino_double',cat:'Καφέδες',name:'Cappuccino Διπλό',price:4.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_cappuccino_single',cat:'Καφέδες',name:'Cappuccino Μονό',price:4.00,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_americano',cat:'Καφέδες',name:'Americano',price:3.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_frappe_nes',cat:'Καφέδες',name:'Φραπέ / Nescafe',price:3.00,opts:['Σκέτος','Μέτριος','Γλυκός','Με γάλα','Χωρίς γάλα']},
+    {id:'coffee_latte',cat:'Καφέδες',name:'Latte',price:4.00,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_ellinikos_double',cat:'Καφέδες',name:'Ελληνικός Διπλός',price:3.00,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_ellinikos_single',cat:'Καφέδες',name:'Ελληνικός Μονός',price:2.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_tea_hot',cat:'Καφέδες',name:'Τσάι Ζεστό',price:2.50,opts:['Κανονικό','Με μέλι','Με λεμόνι']},
+    {id:'coffee_chocolate',cat:'Καφέδες',name:'Σοκολάτα',price:3.50,opts:['Ζεστή','Κρύα']},
+    {id:'soft_softdrinks',cat:'Αναψυκτικά',name:'Αναψυκτικά',price:3.00,opts:['Cola','Πορτοκαλάδα','Λεμονάδα','Σόδα','Sprite']},
+    {id:'soft_granita',cat:'Αναψυκτικά',name:'Γρανίτα',price:4.00,opts:['Κανονικό']},
+    {id:'soft_juice',cat:'Αναψυκτικά',name:'Χυμοί',price:3.00,opts:['Πορτοκάλι','Βύσσινο','Ροδάκινο','Ανάμεικτος']},
+    {id:'soft_fresh_orange',cat:'Αναψυκτικά',name:'Φυσικός χυμός πορτοκάλι',price:4.50,opts:['Κανονικό']},
+    {id:'soft_redbull',cat:'Αναψυκτικά',name:'Red Bull',price:5.00,opts:['Κανονικό']},
+    {id:'water_vikos_sparkling',cat:'Αναψυκτικά',name:'Βίκος ανθρακούχο 330ml',price:3.50,opts:['Κρύο','Θερμοκρασία δωματίου']},
+    {id:'water_vikos_1l',cat:'Αναψυκτικά',name:'Βίκος μεταλλικό 1 λίτρο',price:1.50,opts:['Κρύο','Θερμοκρασία δωματίου']},
+    {id:'water_zagori_500',cat:'Αναψυκτικά',name:'Νερό 500ml',price:0.50,opts:['Κρύο','Θερμοκρασία δωματίου']},
+    {id:'beer_alpha_500',cat:'Μπύρες',name:'Άλφα 500ml',price:4.50,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_mythos_500',cat:'Μπύρες',name:'Μύθος 500ml',price:5.00,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_amstel_500',cat:'Μπύρες',name:'Amstel 500ml',price:4.50,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_heineken_500',cat:'Μπύρες',name:'Heineken 500ml',price:5.00,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_kaiser_500',cat:'Μπύρες',name:'Kaiser 500ml',price:5.00,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_vergina_500',cat:'Μπύρες',name:'Βεργίνα 500ml',price:4.00,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_vergina_free',cat:'Μπύρες',name:'Βεργίνα Free 500ml',price:4.50,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_vergina_radler',cat:'Μπύρες',name:'Βεργίνα Radler 500ml',price:4.50,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_vergina_weiss',cat:'Μπύρες',name:'Βεργίνα Weiss 500ml',price:4.50,opts:['Παγωμένη','Ποτήρι']},
+    {id:'meze_small',cat:'Μεζές',name:'Μικρός μεζές',price:6.00,opts:['Κανονικός','Χωρίς πικάντικο','Έξτρα ψωμί']},
+    {id:'meze_large',cat:'Μεζές',name:'Μεγάλος μεζές',price:10.00,opts:['Κανονικός','Χωρίς πικάντικο','Έξτρα ψωμί']},
+    {id:'food_baguette',cat:'Σνακ',name:'Μπαγκέτα',price:3.50,opts:['Κανονικό']},
+    {id:'food_hamburger',cat:'Σνακ',name:'Hamburger',price:6.00,opts:['Κανονικό']},
+    {id:'food_club',cat:'Σνακ',name:'Club Sandwich',price:6.00,opts:['Κανονικό']},
+    {id:'food_toast',cat:'Σνακ',name:'Τοστ',price:3.00,opts:['Κανονικό']},
+    {id:'drink_tsipouro_meze',cat:'Ούζο / Τσίπουρο',name:'Τσίπουρο + μεζές',price:6.00,opts:['Κανονικό']},
+    {id:'drink_tsipouro_bottle',cat:'Ούζο / Τσίπουρο',name:'Τσίπουρο φιάλη 200ml',price:7.00,opts:['Κανονικό']},
+    {id:'drink_tsipouro_glass',cat:'Ούζο / Τσίπουρο',name:'Τσίπουρο ποτήρι',price:3.00,opts:['Κανονικό']},
+    {id:'drink_ouzo_bottle',cat:'Ούζο / Τσίπουρο',name:'Ούζο φιάλη 200ml',price:7.00,opts:['Κανονικό']},
+    {id:'drink_ouzo_glass',cat:'Ούζο / Τσίπουρο',name:'Ούζο ποτήρι',price:3.00,opts:['Κανονικό']},
+    {id:'drink_ouzo_tsipouro_carafe',cat:'Ούζο / Τσίπουρο',name:'Ούζο / Τσίπουρο καραφάκι 200ml',price:6.00,opts:['Ούζο','Τσίπουρο']},
+    {id:'wine_rose_500',cat:'Κρασί',name:'Αμπέλου Τέχνης Ροζέ ημίξηρος 500ml',price:8.00,opts:['Κανονικό']},
+    {id:'wine_semisweet_500',cat:'Κρασί',name:'Αμπέλου Τέχνης Ημίγλυκος 500ml',price:8.00,opts:['Κανονικό']},
+    {id:'wine_red_dry_500',cat:'Κρασί',name:'Αμπέλου Τέχνης Ερυθρός ξηρός 500ml',price:8.00,opts:['Κανονικό']},
+    {id:'wine_glass',cat:'Κρασί',name:'Ποτήρι κρασί',price:5.00,opts:['Ροζέ ημίξηρος','Ημίγλυκος','Ερυθρός ξηρός']},
+    {id:'spirit_absolut',cat:'Ποτά',name:'Absolut',price:7.00,opts:['Κανονικό']},
+    {id:'spirit_stolichnaya',cat:'Ποτά',name:'Stolichnaya',price:7.00,opts:['Κανονικό']},
+    {id:'spirit_serkova',cat:'Ποτά',name:'Serkova',price:7.00,opts:['Κανονικό']},
+    {id:'spirit_sobieski',cat:'Ποτά',name:'Sobieski',price:7.00,opts:['Κανονικό']},
+    {id:'spirit_baileys',cat:'Ποτά',name:'Baileys',price:6.50,opts:['Κανονικό']},
+    {id:'spirit_skinos',cat:'Ποτά',name:'Skinos Mastiha',price:6.50,opts:['Κανονικό']},
+    {id:'spirit_jagermeister',cat:'Ποτά',name:'Jägermeister',price:7.00,opts:['Κανονικό']},
+    {id:'spirit_metaxa',cat:'Ποτά',name:'Metaxa',price:6.50,opts:['Κανονικό']},
+    {id:'spirit_martini',cat:'Ποτά',name:'Martini',price:6.50,opts:['Κανονικό']},
+    {id:'spirit_bacardi',cat:'Ποτά',name:'Bacardi',price:7.00,opts:['Κανονικό']},
+    {id:'spirit_havana',cat:'Ποτά',name:'Havana',price:7.00,opts:['Κανονικό']},
+    {id:'spirit_kahlua',cat:'Ποτά',name:'Kahlua',price:3.00,opts:['Κανονικό']},
+    {id:'whisky_johnnie_red',cat:'Ουίσκι / Gin',name:'Johnnie Red',price:7.00,opts:['Κανονικό']},
+    {id:'whisky_dewars',cat:'Ουίσκι / Gin',name:'Dewar’s',price:7.00,opts:['Κανονικό']},
+    {id:'whisky_cutty_sark',cat:'Ουίσκι / Gin',name:'Cutty Sark',price:7.00,opts:['Κανονικό']},
+    {id:'whisky_famous',cat:'Ουίσκι / Gin',name:'Famous',price:7.00,opts:['Κανονικό']},
+    {id:'whisky_haig',cat:'Ουίσκι / Gin',name:'Haig',price:7.00,opts:['Κανονικό']},
+    {id:'whisky_johnnie_black',cat:'Ουίσκι / Gin',name:'Johnnie Black',price:9.00,opts:['Κανονικό']},
+    {id:'whisky_chivas',cat:'Ουίσκι / Gin',name:'Chivas',price:8.00,opts:['Κανονικό']},
+    {id:'whisky_jameson',cat:'Ουίσκι / Gin',name:'Jameson',price:7.00,opts:['Κανονικό']},
+    {id:'whisky_tullamore',cat:'Ουίσκι / Gin',name:'Tullamore Dew',price:8.00,opts:['Κανονικό']},
+    {id:'whisky_jack_daniels',cat:'Ουίσκι / Gin',name:'Jack Daniel’s',price:9.00,opts:['Κανονικό']},
+    {id:'whisky_ballantines',cat:'Ουίσκι / Gin',name:'Ballantine’s',price:9.00,opts:['Κανονικό']},
+    {id:'gin_roku',cat:'Ουίσκι / Gin',name:'Roku Gin',price:10.00,opts:['Κανονικό']},
+    {id:'gin_hendricks',cat:'Ουίσκι / Gin',name:'Hendrick’s',price:10.00,opts:['Κανονικό']}
   ],
   orders:{}
 };
