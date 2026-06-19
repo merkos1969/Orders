@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CoffeeBeer Order</title>
+  <style>
+    :root{
+      --bg:#f4f6fb; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
+      --primary:#2563eb; --primary-dark:#1d4ed8; --green:#16a34a;
+      --orange:#f59e0b; --red:#dc2626; --border:#e5e7eb; --shadow:0 8px 24px rgba(15,23,42,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+    header{position:sticky;top:0;z-index:10;background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;padding:14px 16px;box-shadow:var(--shadow)}
+    header h1{font-size:20px;margin:0;font-weight:800}.sub{font-size:12px;opacity:.9;margin-top:3px}
+    main{padding:14px;max-width:980px;margin:auto}.screen{display:none}.screen.active{display:block}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}.btn{border:none;border-radius:12px;padding:11px 14px;font-weight:800;cursor:pointer;background:var(--primary);color:#fff;box-shadow:0 4px 12px rgba(37,99,235,.2)}
+    .btn:active{transform:scale(.98)}.btn.secondary{background:#e5e7eb;color:#111827;box-shadow:none}.btn.green{background:var(--green)}.btn.red{background:var(--red)}.btn.orange{background:var(--orange);color:#111827}.btn.small{padding:7px 10px;border-radius:10px;font-size:13px}.btn.full{width:100%}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.table-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:var(--shadow);min-height:92px;display:flex;flex-direction:column;justify-content:space-between}
+    .table-card h3{margin:0;font-size:18px}.status{font-size:12px;font-weight:800;border-radius:999px;padding:5px 8px;display:inline-block;margin-top:8px;width:max-content}.free{background:#dcfce7;color:#166534}.busy{background:#ffedd5;color:#9a3412}.total{font-size:17px;font-weight:900;margin-top:8px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
+    .card h2{margin:0 0 10px;font-size:19px}.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px}.tab{white-space:nowrap;border:none;border-radius:999px;padding:10px 14px;font-weight:900;background:#e5e7eb;color:#111827}.tab.active{background:var(--primary);color:#fff}
+    .product{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;border:1px solid var(--border);border-radius:14px;padding:10px;margin-bottom:8px;background:#fff}.product .name{font-weight:900}.product .price{font-size:13px;color:var(--muted);margin-top:2px}.qty{display:flex;gap:8px;align-items:center}.circle{width:34px;height:34px;border:none;border-radius:999px;background:#e5e7eb;font-weight:900;font-size:18px}.qnum{font-weight:900;min-width:22px;text-align:center}
+    select,input,textarea{width:100%;border:1px solid var(--border);border-radius:12px;padding:11px;font-size:15px;background:#fff}label{font-size:13px;font-weight:900;color:#374151;display:block;margin:8px 0 5px}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.order-line{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start;border-bottom:1px solid var(--border);padding:10px 0}.order-line:last-child{border-bottom:none}.line-title{font-weight:900}.line-meta{font-size:13px;color:var(--muted);margin-top:3px}.line-total{font-weight:900}.empty{color:var(--muted);text-align:center;padding:22px}.summary{font-size:22px;font-weight:900;text-align:right;margin:12px 0}.footer-note{font-size:12px;color:var(--muted);text-align:center;margin:18px 0}.hidden{display:none!important}
+    .settings-list{display:grid;gap:8px}.settings-item{display:grid;grid-template-columns:1fr 95px 72px;gap:8px;align-items:center}.settings-item b{font-size:14px}.badge{font-size:12px;color:#fff;background:#111827;border-radius:999px;padding:4px 8px}
+    @media(min-width:720px){.grid{grid-template-columns:repeat(4,1fr)}.product{grid-template-columns:1fr 155px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}}
+  </style>
+</head>
+<body>
+<header>
+  <h1>CoffeeBeer Order</h1>
+  <div class="sub">Καφέδες • Μπύρες • Μικρός / Μεγάλος μεζές</div>
+</header>
+<main>
+  <section id="home" class="screen active">
+    <div class="toolbar">
+      <button class="btn" onclick="showHome()">Τραπέζια</button>
+      <button class="btn secondary" onclick="openSettings()">Κατάλογος / Τιμές</button>
+      <button class="btn secondary" onclick="exportData()">Backup</button>
+      <button class="btn secondary" onclick="document.getElementById('importFile').click()">Restore</button>
+      <input id="importFile" class="hidden" type="file" accept="application/json" onchange="importData(event)">
+    </div>
+    <div id="tables" class="grid"></div>
+    <div class="footer-note">Αποθηκεύεται αυτόματα στη συσκευή με localStorage.</div>
+  </section>
+
+  <section id="order" class="screen">
+    <div class="toolbar">
+      <button class="btn secondary" onclick="showHome()">← Πίσω</button>
+      <button class="btn green" onclick="saveOrder()">Αποθήκευση</button>
+      <button class="btn red" onclick="closeTable()">Κλείσιμο τραπεζιού</button>
+    </div>
+    <div class="card">
+      <h2 id="orderTitle">Τραπέζι</h2>
+      <div class="tabs" id="tabs"></div>
+      <div id="products"></div>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <h2>Τρέχουσα παραγγελία</h2>
+        <div id="orderLines"></div>
+        <div class="summary" id="orderTotal">0,00€</div>
+      </div>
+      <div class="card">
+        <h2>Γενικό σχόλιο</h2>
+        <textarea id="generalNote" rows="5" placeholder="π.χ. πρώτα οι καφέδες, μετά οι μπύρες..."></textarea>
+        <div class="toolbar">
+          <button class="btn full" onclick="saveOrder()">Αποθήκευση παραγγελίας</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="settings" class="screen">
+    <div class="toolbar">
+      <button class="btn secondary" onclick="showHome()">← Πίσω</button>
+      <button class="btn green" onclick="saveSettings()">Αποθήκευση τιμών</button>
+      <button class="btn red" onclick="resetAllConfirm()">Μηδενισμός όλων</button>
+    </div>
+    <div class="card">
+      <h2>Κατάλογος / Τιμές</h2>
+      <p style="color:var(--muted);margin-top:0">Άλλαξε τιμές και ονόματα προϊόντων. Οι κατηγορίες μένουν απλές.</p>
+      <div id="settingsList" class="settings-list"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+const KEY='coffeebeer_order_v1';
+const defaultState={
+  tableCount:20,
+  currentTable:null,
+  category:'Καφέδες',
+  menu:[
+    {id:'coffee_ellinikos',cat:'Καφέδες',name:'Ελληνικός',price:1.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_frappe',cat:'Καφέδες',name:'Φραπέ',price:2.00,opts:['Σκέτος','Μέτριος','Γλυκός','Με γάλα','Χωρίς γάλα']},
+    {id:'coffee_freddo_espresso',cat:'Καφέδες',name:'Freddo Espresso',price:2.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_freddo_cappuccino',cat:'Καφέδες',name:'Freddo Cappuccino',price:2.80,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_espresso',cat:'Καφέδες',name:'Espresso',price:1.80,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_cappuccino',cat:'Καφέδες',name:'Cappuccino',price:2.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'beer_330',cat:'Μπύρες',name:'Μπύρα 330ml',price:2.50,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_500',cat:'Μπύρες',name:'Μπύρα 500ml',price:3.50,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_draft_small',cat:'Μπύρες',name:'Βαρελίσια μικρή',price:2.50,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_draft_large',cat:'Μπύρες',name:'Βαρελίσια μεγάλη',price:4.00,opts:['Παγωμένη','Ποτήρι']},
+    {id:'meze_small',cat:'Μεζές',name:'Μικρός μεζές',price:4.00,opts:['Κανονικός','Χωρίς πικάντικο','Έξτρα ψωμί']},
+    {id:'meze_large',cat:'Μεζές',name:'Μεγάλος μεζές',price:7.00,opts:['Κανονικός','Χωρίς πικάντικο','Έξτρα ψωμί']}
+  ],
+  orders:{}
+};
+let state=load();
+function load(){try{return {...structuredClone(defaultState),...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){return structuredClone(defaultState)}}
+function persist(){localStorage.setItem(KEY,JSON.stringify(state))}
+function money(n){return Number(n||0).toLocaleString('el-GR',{style:'currency',currency:'EUR'})}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function showHome(){state.currentTable=null;persist();renderTables();show('home')}
+function renderTables(){const wrap=document.getElementById('tables');wrap.innerHTML='';for(let i=1;i<=state.tableCount;i++){const order=state.orders[i];const total=(order?.items||[]).reduce((s,x)=>s+x.qty*x.price,0);const busy=order&&order.items&&order.items.length>0;const div=document.createElement('div');div.className='table-card';div.onclick=()=>openTable(i);div.innerHTML=`<div><h3>Τραπέζι ${i}</h3><span class="status ${busy?'busy':'free'}">${busy?'Έχει παραγγελία':'Ελεύθερο'}</span></div><div class="total">${money(total)}</div>`;wrap.appendChild(div)}}
+function openTable(n){state.currentTable=n;if(!state.orders[n])state.orders[n]={items:[],note:''};state.category='Καφέδες';persist();renderOrder();show('order')}
+function cats(){return [...new Set(state.menu.map(m=>m.cat))]}
+function renderOrder(){document.getElementById('orderTitle').textContent='Τραπέζι '+state.currentTable;document.getElementById('generalNote').value=state.orders[state.currentTable]?.note||'';renderTabs();renderProducts();renderLines()}
+function renderTabs(){const t=document.getElementById('tabs');t.innerHTML='';cats().forEach(c=>{const b=document.createElement('button');b.className='tab '+(state.category===c?'active':'');b.textContent=c;b.onclick=()=>{state.category=c;renderOrder()};t.appendChild(b)})}
+function lineKey(item,opt,note){return item.id+'|'+(opt||'')+'|'+(note||'')}
+function getQty(item,opt,note){const lines=state.orders[state.currentTable]?.items||[];return lines.find(x=>x.key===lineKey(item,opt,note))?.qty||0}
+function renderProducts(){const p=document.getElementById('products');p.innerHTML='';state.menu.filter(m=>m.cat===state.category).forEach(item=>{const div=document.createElement('div');div.className='product';const opts=item.opts||[];const optId='opt_'+item.id;const noteId='note_'+item.id;div.innerHTML=`<div><div class="name">${item.name}</div><div class="price">${money(item.price)}</div><label>Επιλογή</label><select id="${optId}">${opts.map(o=>`<option>${o}</option>`).join('')}</select><label>Σχόλιο</label><input id="${noteId}" placeholder="προαιρετικό σχόλιο"></div><div><button class="btn small" onclick="addProduct('${item.id}')">+ Προσθήκη</button></div>`;p.appendChild(div)})}
+function addProduct(id){const item=state.menu.find(m=>m.id===id);const opt=document.getElementById('opt_'+id)?.value||'';const note=document.getElementById('note_'+id)?.value.trim()||'';const key=lineKey(item,opt,note);const order=state.orders[state.currentTable];let line=order.items.find(x=>x.key===key);if(line){line.qty++}else{order.items.push({key,id:item.id,name:item.name,price:Number(item.price),qty:1,opt,note})}persist();renderLines();renderTables();document.getElementById('note_'+id).value=''}
+function changeQty(key,delta){const order=state.orders[state.currentTable];const line=order.items.find(x=>x.key===key);if(!line)return;line.qty+=delta;if(line.qty<=0)order.items=order.items.filter(x=>x.key!==key);persist();renderLines();renderTables()}
+function renderLines(){const order=state.orders[state.currentTable]||{items:[]};const wrap=document.getElementById('orderLines');if(!order.items.length){wrap.innerHTML='<div class="empty">Δεν υπάρχει παραγγελία ακόμη.</div>';document.getElementById('orderTotal').textContent=money(0);return}wrap.innerHTML='';let total=0;order.items.forEach(l=>{total+=l.qty*l.price;const div=document.createElement('div');div.className='order-line';div.innerHTML=`<div><div class="line-title">${l.qty} × ${l.name}</div><div class="line-meta">${l.opt||''}${l.note?' • '+l.note:''}</div><div class="qty" style="margin-top:7px"><button class="circle" onclick="changeQty('${l.key}',-1)">−</button><span class="qnum">${l.qty}</span><button class="circle" onclick="changeQty('${l.key}',1)">+</button></div></div><div class="line-total">${money(l.qty*l.price)}</div>`;wrap.appendChild(div)});document.getElementById('orderTotal').textContent=money(total)}
+function saveOrder(){if(!state.currentTable)return;state.orders[state.currentTable].note=document.getElementById('generalNote').value.trim();persist();alert('Η παραγγελία αποθηκεύτηκε.');renderTables()}
+function closeTable(){if(!state.currentTable)return;if(confirm('Να κλείσει το τραπέζι '+state.currentTable+'; Θα διαγραφεί η παραγγελία.')){delete state.orders[state.currentTable];persist();showHome()}}
+function openSettings(){renderSettings();show('settings')}
+function renderSettings(){const wrap=document.getElementById('settingsList');wrap.innerHTML='';state.menu.forEach((m,i)=>{const div=document.createElement('div');div.className='settings-item';div.innerHTML=`<div><span class="badge">${m.cat}</span><input data-i="${i}" data-f="name" value="${m.name}" style="margin-top:6px"></div><input data-i="${i}" data-f="price" type="number" step="0.10" value="${m.price}"><button class="btn small red" onclick="removeItem(${i})">Σβήσε</button>`;wrap.appendChild(div)});const add=document.createElement('div');add.className='card';add.style.boxShadow='none';add.innerHTML=`<h2>Προσθήκη προϊόντος</h2><div class="row"><select id="newCat">${cats().map(c=>`<option>${c}</option>`).join('')}</select><input id="newPrice" type="number" step="0.10" placeholder="Τιμή"></div><label>Όνομα προϊόντος</label><input id="newName" placeholder="π.χ. Νέα μπύρα"><button class="btn full" style="margin-top:10px" onclick="addNewItem()">Προσθήκη</button>`;wrap.appendChild(add)}
+function saveSettings(){document.querySelectorAll('#settingsList input[data-i]').forEach(inp=>{const i=Number(inp.dataset.i);const f=inp.dataset.f;state.menu[i][f]=f==='price'?Number(inp.value||0):inp.value});persist();alert('Οι τιμές αποθηκεύτηκαν.');renderSettings();renderTables()}
+function removeItem(i){if(confirm('Να διαγραφεί αυτό το προϊόν;')){state.menu.splice(i,1);persist();renderSettings()}}
+function addNewItem(){const name=document.getElementById('newName').value.trim();const price=Number(document.getElementById('newPrice').value||0);const cat=document.getElementById('newCat').value;if(!name)return alert('Γράψε όνομα προϊόντος.');state.menu.push({id:'custom_'+Date.now(),cat,name,price,opts:['Κανονικό']});persist();renderSettings()}
+function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='coffeebeer_order_backup.json';a.click();URL.revokeObjectURL(a.href)}
+function importData(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);persist();renderTables();alert('Το backup φορτώθηκε.')}catch(err){alert('Το αρχείο δεν είναι σωστό.')}};r.readAsText(file)}
+function resetAllConfirm(){if(confirm('Προσοχή: Θα διαγραφούν όλες οι παραγγελίες και οι αλλαγές. Συνέχεια;')){localStorage.removeItem(KEY);state=structuredClone(defaultState);renderTables();renderSettings();alert('Έγινε μηδενισμός.')}}
+renderTables();
+</script>
+</body>
+</html>
