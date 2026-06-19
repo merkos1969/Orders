@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CoffeeBeer Order</title>
+  <title>CoffeeBeer Order V5</title>
   <style>
     :root{
       --bg:#f4f6fb; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
@@ -21,16 +21,16 @@
     .table-card h3{margin:0;font-size:18px}.status{font-size:12px;font-weight:800;border-radius:999px;padding:5px 8px;display:inline-block;margin-top:8px;width:max-content}.free{background:#dcfce7;color:#166534}.busy{background:#ffedd5;color:#9a3412}.total{font-size:17px;font-weight:900;margin-top:8px}
     .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
     .card h2{margin:0 0 10px;font-size:19px}.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px}.tab{white-space:nowrap;border:none;border-radius:999px;padding:10px 14px;font-weight:900;background:#e5e7eb;color:#111827}.tab.active{background:var(--primary);color:#fff}
-    .product{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;border:1px solid var(--border);border-radius:14px;padding:10px;margin-bottom:8px;background:#fff}.product .name{font-weight:900}.product .price{font-size:13px;color:var(--muted);margin-top:2px}.qty{display:flex;gap:8px;align-items:center}.circle{width:34px;height:34px;border:none;border-radius:999px;background:#e5e7eb;font-weight:900;font-size:18px}.qnum{font-weight:900;min-width:22px;text-align:center}
+    .product{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;border:1px solid var(--border);border-radius:14px;padding:10px;margin-bottom:8px;background:#fff}.product .name{font-weight:900}.product .price{font-size:13px;color:var(--muted);margin-top:2px}.qty{display:flex;gap:8px;align-items:center}.circle{width:34px;height:34px;border:none;border-radius:999px;background:#e5e7eb;font-weight:900;font-size:18px}.qnum{font-weight:900;min-width:22px;text-align:center}.qty-control{display:grid;grid-template-columns:42px 1fr 42px;gap:8px;align-items:center}.qty-control .circle{width:42px;height:42px;background:var(--primary);color:#fff;font-size:22px}.qty-field{text-align:center;font-weight:900;font-size:18px;padding:10px}
     select,input,textarea{width:100%;border:1px solid var(--border);border-radius:12px;padding:11px;font-size:15px;background:#fff}label{font-size:13px;font-weight:900;color:#374151;display:block;margin:8px 0 5px}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.order-line{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start;border-bottom:1px solid var(--border);padding:10px 0}.order-line:last-child{border-bottom:none}.line-title{font-weight:900}.line-meta{font-size:13px;color:var(--muted);margin-top:3px}.line-total{font-weight:900}.empty{color:var(--muted);text-align:center;padding:22px}.summary{font-size:22px;font-weight:900;text-align:right;margin:12px 0}.footer-note{font-size:12px;color:var(--muted);text-align:center;margin:18px 0}.hidden{display:none!important}
-    .settings-list{display:grid;gap:8px}.settings-item{display:grid;grid-template-columns:1fr 95px 72px;gap:8px;align-items:center}.settings-item b{font-size:14px}.badge{font-size:12px;color:#fff;background:#111827;border-radius:999px;padding:4px 8px}.pay-box{border-top:1px solid var(--border);margin-top:12px;padding-top:12px}.change-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 0}.change-result{font-size:22px;font-weight:900;text-align:center;border-radius:14px;padding:12px;background:#f3f4f6;margin-top:8px}.change-result.ok{background:#dcfce7;color:#166534}.change-result.warn{background:#fee2e2;color:#991b1b}
+    .settings-list{display:grid;gap:8px}.settings-item{display:grid;grid-template-columns:1fr 95px 72px;gap:8px;align-items:center}.settings-item b{font-size:14px}.badge{font-size:12px;color:#fff;background:#111827;border-radius:999px;padding:4px 8px}.pay-box{border-top:1px solid var(--border);margin-top:12px;padding-top:12px}.quick-add{border:1px solid var(--border);background:#f9fafb;border-radius:16px;padding:12px}.change-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 0}.change-result{font-size:22px;font-weight:900;text-align:center;border-radius:14px;padding:12px;background:#f3f4f6;margin-top:8px}.change-result.ok{background:#dcfce7;color:#166534}.change-result.warn{background:#fee2e2;color:#991b1b}
     @media(min-width:720px){.grid{grid-template-columns:repeat(4,1fr)}.product{grid-template-columns:1fr 155px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}}
   </style>
 </head>
 <body>
 <header>
-  <h1>CoffeeBeer Order</h1>
-  <div class="sub">Καφέδες • Μπύρες • Μικρός / Μεγάλος μεζές</div>
+  <h1>CoffeeBeer Order V5</h1>
+  <div class="sub">Καφέδες • Μπύρες • Αναψυκτικά • Μικρός / Μεγάλος μεζές</div>
 </header>
 <main>
   <section id="home" class="screen active">
@@ -53,8 +53,29 @@
     </div>
     <div class="card">
       <h2 id="orderTitle">Τραπέζι</h2>
-      <div class="tabs" id="tabs"></div>
-      <div id="products"></div>
+      <div class="quick-add">
+        <label>Κατηγορία</label>
+        <select id="categorySelect" onchange="selectCategory(this.value)"></select>
+        <label>Προϊόν</label>
+        <select id="productSelect" onchange="renderSelectedOptions()"></select>
+        <div class="row">
+          <div>
+            <label>Επιλογή</label>
+            <select id="optionSelect"></select>
+          </div>
+          <div>
+            <label>Ποσότητα</label>
+            <div class="qty-control">
+              <button class="circle" type="button" onclick="adjustQuickQty(-1)">−</button>
+              <input id="qtyInput" class="qty-field" type="number" min="1" step="1" value="1" oninput="normalizeQuickQty(false)">
+              <button class="circle" type="button" onclick="adjustQuickQty(1)">+</button>
+            </div>
+          </div>
+        </div>
+        <label>Σχόλιο</label>
+        <input id="itemNote" placeholder="π.χ. μέτριος, χωρίς πάγο, έξτρα ψωμί">
+        <button class="btn full" style="margin-top:10px" onclick="addSelectedProduct()">+ Προσθήκη στην παραγγελία</button>
+      </div>
     </div>
     <div class="two-col">
       <div class="card">
@@ -116,12 +137,30 @@ const defaultState={
     {id:'beer_500',cat:'Μπύρες',name:'Μπύρα 500ml',price:3.50,opts:['Παγωμένη','Ποτήρι']},
     {id:'beer_draft_small',cat:'Μπύρες',name:'Βαρελίσια μικρή',price:2.50,opts:['Παγωμένη','Ποτήρι']},
     {id:'beer_draft_large',cat:'Μπύρες',name:'Βαρελίσια μεγάλη',price:4.00,opts:['Παγωμένη','Ποτήρι']},
+    {id:'soft_cola',cat:'Αναψυκτικά',name:'Coca-Cola',price:2.00,opts:['Κανονικό','Zero','Light','Με πάγο','Χωρίς πάγο']},
+    {id:'soft_orange',cat:'Αναψυκτικά',name:'Πορτοκαλάδα',price:2.00,opts:['Με ανθρακικό','Χωρίς ανθρακικό','Με πάγο','Χωρίς πάγο']},
+    {id:'soft_lemon',cat:'Αναψυκτικά',name:'Λεμονάδα',price:2.00,opts:['Με ανθρακικό','Χωρίς ανθρακικό','Με πάγο','Χωρίς πάγο']},
+    {id:'soft_soda',cat:'Αναψυκτικά',name:'Σόδα',price:2.00,opts:['Με πάγο','Χωρίς πάγο','Με λεμόνι']},
+    {id:'soft_water',cat:'Αναψυκτικά',name:'Νερό 500ml',price:0.50,opts:['Κρύο','Θερμοκρασία δωματίου']},
     {id:'meze_small',cat:'Μεζές',name:'Μικρός μεζές',price:4.00,opts:['Κανονικός','Χωρίς πικάντικο','Έξτρα ψωμί']},
     {id:'meze_large',cat:'Μεζές',name:'Μεγάλος μεζές',price:7.00,opts:['Κανονικός','Χωρίς πικάντικο','Έξτρα ψωμί']}
   ],
   orders:{}
 };
 let state=load();
+
+mergeDefaultMenu();
+function mergeDefaultMenu(){
+  const byId=new Set((state.menu||[]).map(x=>x.id));
+  let changed=false;
+  defaultState.menu.forEach(item=>{
+    if(!byId.has(item.id)){
+      state.menu.push(structuredClone(item));
+      changed=true;
+    }
+  });
+  if(changed)persist();
+}
 function load(){try{return {...structuredClone(defaultState),...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){return structuredClone(defaultState)}}
 function persist(){localStorage.setItem(KEY,JSON.stringify(state))}
 function money(n){return Number(n||0).toLocaleString('el-GR',{style:'currency',currency:'EUR'})}
@@ -130,12 +169,57 @@ function showHome(){state.currentTable=null;persist();renderTables();show('home'
 function renderTables(){const wrap=document.getElementById('tables');wrap.innerHTML='';for(let i=1;i<=state.tableCount;i++){const order=state.orders[i];const total=(order?.items||[]).reduce((s,x)=>s+x.qty*x.price,0);const busy=order&&order.items&&order.items.length>0;const div=document.createElement('div');div.className='table-card';div.onclick=()=>openTable(i);div.innerHTML=`<div><h3>Τραπέζι ${i}</h3><span class="status ${busy?'busy':'free'}">${busy?'Έχει παραγγελία':'Ελεύθερο'}</span></div><div class="total">${money(total)}</div>`;wrap.appendChild(div)}}
 function openTable(n){state.currentTable=n;if(!state.orders[n])state.orders[n]={items:[],note:''};state.category='Καφέδες';persist();renderOrder();show('order')}
 function cats(){return [...new Set(state.menu.map(m=>m.cat))]}
-function renderOrder(){document.getElementById('orderTitle').textContent='Τραπέζι '+state.currentTable;document.getElementById('generalNote').value=state.orders[state.currentTable]?.note||'';const paid=document.getElementById('paidAmount');if(paid)paid.value='';renderTabs();renderProducts();renderLines()}
-function renderTabs(){const t=document.getElementById('tabs');t.innerHTML='';cats().forEach(c=>{const b=document.createElement('button');b.className='tab '+(state.category===c?'active':'');b.textContent=c;b.onclick=()=>{state.category=c;renderOrder()};t.appendChild(b)})}
+function renderOrder(){document.getElementById('orderTitle').textContent='Τραπέζι '+state.currentTable;document.getElementById('generalNote').value=state.orders[state.currentTable]?.note||'';const paid=document.getElementById('paidAmount');if(paid)paid.value='';renderDropdowns();renderLines()}
 function lineKey(item,opt,note){return item.id+'|'+(opt||'')+'|'+(note||'')}
-function getQty(item,opt,note){const lines=state.orders[state.currentTable]?.items||[];return lines.find(x=>x.key===lineKey(item,opt,note))?.qty||0}
-function renderProducts(){const p=document.getElementById('products');p.innerHTML='';state.menu.filter(m=>m.cat===state.category).forEach(item=>{const div=document.createElement('div');div.className='product';const opts=item.opts||[];const optId='opt_'+item.id;const noteId='note_'+item.id;div.innerHTML=`<div><div class="name">${item.name}</div><div class="price">${money(item.price)}</div><label>Επιλογή</label><select id="${optId}">${opts.map(o=>`<option>${o}</option>`).join('')}</select><label>Σχόλιο</label><input id="${noteId}" placeholder="προαιρετικό σχόλιο"></div><div><button class="btn small" onclick="addProduct('${item.id}')">+ Προσθήκη</button></div>`;p.appendChild(div)})}
-function addProduct(id){const item=state.menu.find(m=>m.id===id);const opt=document.getElementById('opt_'+id)?.value||'';const note=document.getElementById('note_'+id)?.value.trim()||'';const key=lineKey(item,opt,note);const order=state.orders[state.currentTable];let line=order.items.find(x=>x.key===key);if(line){line.qty++}else{order.items.push({key,id:item.id,name:item.name,price:Number(item.price),qty:1,opt,note})}persist();renderLines();renderTables();document.getElementById('note_'+id).value=''}
+function renderDropdowns(){
+  const catSel=document.getElementById('categorySelect');
+  const prodSel=document.getElementById('productSelect');
+  if(!catSel||!prodSel)return;
+  const allCats=cats();
+  if(!allCats.includes(state.category))state.category=allCats[0]||'';
+  catSel.innerHTML=allCats.map(c=>`<option ${c===state.category?'selected':''}>${c}</option>`).join('');
+  const products=state.menu.filter(m=>m.cat===state.category);
+  prodSel.innerHTML=products.map(m=>`<option value="${m.id}">${m.name} - ${money(m.price)}</option>`).join('');
+  renderSelectedOptions();
+}
+function selectCategory(cat){state.category=cat;persist();renderDropdowns()}
+function renderSelectedOptions(){
+  const prodSel=document.getElementById('productSelect');
+  const optSel=document.getElementById('optionSelect');
+  if(!prodSel||!optSel)return;
+  const item=state.menu.find(m=>m.id===prodSel.value);
+  const opts=(item&&item.opts&&item.opts.length)?item.opts:['Κανονικό'];
+  optSel.innerHTML=opts.map(o=>`<option>${o}</option>`).join('');
+}
+function normalizeQuickQty(force){
+  const inp=document.getElementById('qtyInput');
+  if(!inp)return 1;
+  let v=parseInt(inp.value||'1',10);
+  if(isNaN(v)||v<1)v=1;
+  if(force||String(inp.value)!==String(v))inp.value=v;
+  return v;
+}
+function adjustQuickQty(delta){
+  const inp=document.getElementById('qtyInput');
+  if(!inp)return;
+  const current=normalizeQuickQty(true);
+  inp.value=Math.max(1,current+delta);
+}
+function addSelectedProduct(){
+  const prodSel=document.getElementById('productSelect');
+  const item=state.menu.find(m=>m.id===prodSel.value);
+  if(!item)return alert('Διάλεξε προϊόν.');
+  const opt=document.getElementById('optionSelect')?.value||'';
+  const note=document.getElementById('itemNote')?.value.trim()||'';
+  const qty=normalizeQuickQty(true);
+  const key=lineKey(item,opt,note);
+  const order=state.orders[state.currentTable];
+  let line=order.items.find(x=>x.key===key);
+  if(line){line.qty+=qty}else{order.items.push({key,id:item.id,name:item.name,price:Number(item.price),qty,opt,note})}
+  persist();renderLines();renderTables();
+  document.getElementById('itemNote').value='';
+  document.getElementById('qtyInput').value=1;
+}
 function changeQty(key,delta){const order=state.orders[state.currentTable];const line=order.items.find(x=>x.key===key);if(!line)return;line.qty+=delta;if(line.qty<=0)order.items=order.items.filter(x=>x.key!==key);persist();renderLines();renderTables()}
 function getOrderTotal(){const order=state.orders[state.currentTable]||{items:[]};return (order.items||[]).reduce((s,x)=>s+x.qty*x.price,0)}
 function renderLines(){const order=state.orders[state.currentTable]||{items:[]};const wrap=document.getElementById('orderLines');if(!order.items.length){wrap.innerHTML='<div class="empty">Δεν υπάρχει παραγγελία ακόμη.</div>';document.getElementById('orderTotal').textContent=money(0);calcChange();return}wrap.innerHTML='';let total=0;order.items.forEach(l=>{total+=l.qty*l.price;const div=document.createElement('div');div.className='order-line';div.innerHTML=`<div><div class="line-title">${l.qty} × ${l.name}</div><div class="line-meta">${l.opt||''}${l.note?' • '+l.note:''}</div><div class="qty" style="margin-top:7px"><button class="circle" onclick="changeQty('${l.key}',-1)">−</button><span class="qnum">${l.qty}</span><button class="circle" onclick="changeQty('${l.key}',1)">+</button></div></div><div class="line-total">${money(l.qty*l.price)}</div>`;wrap.appendChild(div)});document.getElementById('orderTotal').textContent=money(total);calcChange()}
