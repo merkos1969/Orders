@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CoffeeBeer Order V9</title>
+  <title>MerkosApp</title>
   <style>
     :root{
       --bg:#f4f6fb; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
@@ -31,7 +31,7 @@
 <body>
 <header>
   <h1>ΚΑΦΕΝΕΙΟ ΛΑΜΠΡΟΣ</h1>
-  <div class="sub">Παραγγελίες • WhatsApp • Μπαρ / Κουζίνα</div>
+  <div class="sub">Παραγγελίες • WhatsApp • Σερβιτόρος • Μπαρ / Κουζίνα</div>
 </header>
 <main>
   <section id="home" class="screen active">
@@ -42,6 +42,14 @@
       <button class="btn secondary" onclick="exportData()">Backup</button>
       <button class="btn secondary" onclick="document.getElementById('importFile').click()">Restore</button>
       <input id="importFile" class="hidden" type="file" accept="application/json" onchange="importData(event)">
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <h2>Σερβιτόρος</h2>
+      <div class="row">
+        <input id="waiterName" placeholder="Γράψε όνομα σερβιτόρου" oninput="saveWaiterName(false)">
+        <button class="btn green" onclick="saveWaiterName(true)">Αποθήκευση ονόματος</button>
+      </div>
+      <div class="line-meta" style="margin-top:8px">Το όνομα αποθηκεύεται στη συσκευή και μπαίνει αυτόματα σε κάθε παραγγελία / WhatsApp.</div>
     </div>
     <div id="tables" class="grid"></div>
     <div class="footer-note">Αποθηκεύεται αυτόματα στη συσκευή με localStorage.</div>
@@ -57,6 +65,7 @@
     </div>
     <div class="card">
       <h2 id="orderTitle">Τραπέζι</h2>
+      <div id="orderWaiterInfo" class="line-meta" style="margin-bottom:10px"></div>
       <div class="quick-add">
         <label>Κατηγορία</label>
         <select id="categorySelect" onchange="selectCategory(this.value)"></select>
@@ -145,6 +154,7 @@ const defaultState={
   tableCount:20,
   currentTable:null,
   category:'Καφέδες',
+  waiterName:'',
   menu:[
     {id:'coffee_freddo_espresso',cat:'Καφέδες',name:'Freddo Espresso',price:4.00,opts:['Σκέτος','Μέτριος','Γλυκός']},
     {id:'coffee_freddo_cappuccino',cat:'Καφέδες',name:'Freddo Cappuccino',price:4.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
@@ -238,13 +248,15 @@ function mergeDefaultMenu(){
 }
 function load(){try{return {...structuredClone(defaultState),...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){return structuredClone(defaultState)}}
 function persist(){localStorage.setItem(KEY,JSON.stringify(state))}
+function saveWaiterName(showAlert){const inp=document.getElementById('waiterName');if(!inp)return;state.waiterName=(inp.value||'').trim();persist();if(showAlert)alert('Το όνομα σερβιτόρου αποθηκεύτηκε.')}
+function currentWaiter(){return (state.waiterName||'').trim()}
 function money(n){return Number(n||0).toLocaleString('el-GR',{style:'currency',currency:'EUR'})}
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function showHome(){state.currentTable=null;persist();renderTables();show('home')}
-function renderTables(){const wrap=document.getElementById('tables');wrap.innerHTML='';for(let i=1;i<=state.tableCount;i++){const order=state.orders[i];const total=(order?.items||[]).reduce((s,x)=>s+x.qty*x.price,0);const busy=order&&order.items&&order.items.length>0;const div=document.createElement('div');div.className='table-card';div.onclick=()=>openTable(i);div.innerHTML=`<div><h3>Τραπέζι ${i}</h3><span class="status ${busy?'busy':'free'}">${busy?'Έχει παραγγελία':'Ελεύθερο'}</span></div><div class="total">${money(total)}</div>`;wrap.appendChild(div)}}
+function renderTables(){const waiter=document.getElementById('waiterName');if(waiter)waiter.value=currentWaiter();const wrap=document.getElementById('tables');wrap.innerHTML='';for(let i=1;i<=state.tableCount;i++){const order=state.orders[i];const total=(order?.items||[]).reduce((s,x)=>s+x.qty*x.price,0);const busy=order&&order.items&&order.items.length>0;const div=document.createElement('div');div.className='table-card';div.onclick=()=>openTable(i);div.innerHTML=`<div><h3>Τραπέζι ${i}</h3><span class="status ${busy?'busy':'free'}">${busy?'Έχει παραγγελία':'Ελεύθερο'}</span></div><div class="total">${money(total)}</div>`;wrap.appendChild(div)}}
 function openTable(n){state.currentTable=n;if(!state.orders[n])state.orders[n]={items:[],note:''};state.category='Καφέδες';persist();renderOrder();show('order')}
 function cats(){return [...new Set(state.menu.map(m=>m.cat))]}
-function renderOrder(){document.getElementById('orderTitle').textContent='Τραπέζι '+state.currentTable;document.getElementById('generalNote').value=state.orders[state.currentTable]?.note||'';const paid=document.getElementById('paidAmount');if(paid)paid.value='';renderDropdowns();renderLines()}
+function renderOrder(){document.getElementById('orderTitle').textContent='Τραπέζι '+state.currentTable;const wi=document.getElementById('orderWaiterInfo');if(wi)wi.textContent=currentWaiter()?'Σερβιτόρος: '+currentWaiter():'Δεν έχει οριστεί σερβιτόρος';document.getElementById('generalNote').value=state.orders[state.currentTable]?.note||'';const paid=document.getElementById('paidAmount');if(paid)paid.value='';renderDropdowns();renderLines()}
 function lineKey(item,opt,note){return item.id+'|'+(opt||'')+'|'+(note||'')}
 function renderDropdowns(){
   const catSel=document.getElementById('categorySelect');
@@ -300,13 +312,14 @@ function getOrderTotal(){const order=state.orders[state.currentTable]||{items:[]
 function renderLines(){const order=state.orders[state.currentTable]||{items:[]};const wrap=document.getElementById('orderLines');if(!order.items.length){wrap.innerHTML='<div class="empty">Δεν υπάρχει παραγγελία ακόμη.</div>';document.getElementById('orderTotal').textContent=money(0);calcChange();return}wrap.innerHTML='';let total=0;order.items.forEach(l=>{total+=l.qty*l.price;const div=document.createElement('div');div.className='order-line';div.innerHTML=`<div><div class="line-title">${l.qty} × ${l.name}</div><div class="line-meta">${l.opt||''}${l.note?' • '+l.note:''}</div><div class="qty" style="margin-top:7px"><button class="circle" onclick="changeQty('${l.key}',-1)">−</button><span class="qnum">${l.qty}</span><button class="circle" onclick="changeQty('${l.key}',1)">+</button></div></div><div class="line-total">${money(l.qty*l.price)}</div>`;wrap.appendChild(div)});document.getElementById('orderTotal').textContent=money(total);calcChange()}
 function quickPayment(amount){const inp=document.getElementById('paidAmount');if(!inp)return;inp.value=amount;calcChange()}
 function calcChange(){const out=document.getElementById('changeResult');const inp=document.getElementById('paidAmount');if(!out||!inp)return;const total=getOrderTotal();const paid=Number(inp.value||0);out.className='change-result';if(!paid){out.textContent='Ρέστα: '+money(0);return}const change=paid-total;if(change>=0){out.classList.add('ok');out.textContent='Ρέστα: '+money(change)}else{out.classList.add('warn');out.textContent='Λείπουν: '+money(Math.abs(change))}}
-function saveOrder(){if(!state.currentTable)return;state.orders[state.currentTable].note=document.getElementById('generalNote').value.trim();persist();alert('Η παραγγελία αποθηκεύτηκε.');renderTables()}
+function saveOrder(){if(!state.currentTable)return;state.orders[state.currentTable].note=document.getElementById('generalNote').value.trim();state.orders[state.currentTable].waiter=currentWaiter();persist();alert('Η παραγγελία αποθηκεύτηκε.');renderTables()}
 function destinationFor(cat){return (cat==='Μεζές'||cat==='Σνακ')?'Κουζίνα':'Μπαρ'}
 function sendForPrep(){
   if(!state.currentTable)return;
   const order=state.orders[state.currentTable];
   if(!order||!order.items||!order.items.length)return alert('Δεν υπάρχει παραγγελία για αποστολή.');
   order.note=document.getElementById('generalNote').value.trim();
+  order.waiter=currentWaiter();
   const groups={};
   order.items.forEach(line=>{
     const menuItem=state.menu.find(m=>m.id===line.id);
@@ -321,6 +334,7 @@ function sendForPrep(){
       dest,
       status:'Νέα',
       createdAt:new Date().toLocaleString('el-GR'),
+      waiter:order.waiter||currentWaiter(),
       note:order.note||'',
       items:groups[dest]
     });
@@ -329,11 +343,12 @@ function sendForPrep(){
   alert('Η παραγγελία στάλθηκε για ετοιμασία.');
 }
 
-function formatOrderMessage(table, dest, items, note, createdAt){
+function formatOrderMessage(table, dest, items, note, createdAt, waiter){
   const lines=[];
   lines.push(`ΠΑΡΑΓΓΕΛΙΑ - ΤΡΑΠΕΖΙ ${table}`);
   if(dest) lines.push(`Προς: ${dest}`);
   if(createdAt) lines.push(`Ώρα: ${createdAt}`);
+  if(waiter) lines.push(`Σερβιτόρος: ${waiter}`);
   lines.push('');
   let total=0;
   (items||[]).forEach(l=>{
@@ -358,14 +373,15 @@ function sendWhatsAppCurrent(){
   const order=state.orders[state.currentTable];
   if(!order||!order.items||!order.items.length)return alert('Δεν υπάρχει παραγγελία για αποστολή.');
   order.note=document.getElementById('generalNote').value.trim();
+  order.waiter=currentWaiter();
   persist();
-  const msg=formatOrderMessage(state.currentTable,'Μπαρ / Κουζίνα',order.items,order.note,new Date().toLocaleString('el-GR'));
+  const msg=formatOrderMessage(state.currentTable,'Μπαρ / Κουζίνα',order.items,order.note,new Date().toLocaleString('el-GR'),order.waiter||currentWaiter());
   openWhatsAppMessage(msg);
 }
 function sendWhatsAppPrep(id){
   const p=(state.prepOrders||[]).find(x=>x.id===id);
   if(!p)return;
-  const msg=formatOrderMessage(p.table,p.dest,p.items,p.note,p.createdAt);
+  const msg=formatOrderMessage(p.table,p.dest,p.items,p.note,p.createdAt,p.waiter||'');
   openWhatsAppMessage(msg);
 }
 
@@ -381,7 +397,7 @@ function renderPrep(){
   list.forEach(p=>{
     const div=document.createElement('div');div.className='prep-card';
     const lines=(p.items||[]).map(l=>`<div class="order-line"><div><div class="line-title">${l.qty} × ${l.name}</div><div class="line-meta">${l.opt||''}${l.note?' • '+l.note:''}</div></div><div class="line-total">${money(l.qty*l.price)}</div></div>`).join('');
-    div.innerHTML=`<div class="prep-head"><div><div class="prep-title">Τραπέζι ${p.table}</div><div class="line-meta">${p.createdAt}</div><div class="prep-status ${statusClass(p.status)}">${p.status}</div></div><span class="prep-dest">${p.dest}</span></div>${lines}${p.note?`<div class="line-meta" style="margin-top:8px"><b>Σχόλιο:</b> ${p.note}</div>`:''}<div class="prep-actions"><button class="btn small green" onclick="sendWhatsAppPrep('${p.id}')">WhatsApp</button><button class="btn small" onclick="setPrepStatus('${p.id}','Ετοιμάζεται')">Ετοιμάζεται</button><button class="btn small green" onclick="setPrepStatus('${p.id}','Έτοιμη')">Έτοιμη</button><button class="btn small secondary" onclick="setPrepStatus('${p.id}','Παραδόθηκε')">Παραδόθηκε</button><button class="btn small red" onclick="deletePrep('${p.id}')">Σβήσε</button></div>`;
+    div.innerHTML=`<div class="prep-head"><div><div class="prep-title">Τραπέζι ${p.table}</div><div class="line-meta">${p.createdAt}</div>${p.waiter?`<div class="line-meta"><b>Σερβιτόρος:</b> ${p.waiter}</div>`:''}<div class="prep-status ${statusClass(p.status)}">${p.status}</div></div><span class="prep-dest">${p.dest}</span></div>${lines}${p.note?`<div class="line-meta" style="margin-top:8px"><b>Σχόλιο:</b> ${p.note}</div>`:''}<div class="prep-actions"><button class="btn small green" onclick="sendWhatsAppPrep('${p.id}')">WhatsApp</button><button class="btn small" onclick="setPrepStatus('${p.id}','Ετοιμάζεται')">Ετοιμάζεται</button><button class="btn small green" onclick="setPrepStatus('${p.id}','Έτοιμη')">Έτοιμη</button><button class="btn small secondary" onclick="setPrepStatus('${p.id}','Παραδόθηκε')">Παραδόθηκε</button><button class="btn small red" onclick="deletePrep('${p.id}')">Σβήσε</button></div>`;
     wrap.appendChild(div);
   });
 }
