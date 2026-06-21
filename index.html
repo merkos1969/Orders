@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MerkosApp</title>
+  <style>
+    :root{
+      --bg:#f4f6fb; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
+      --primary:#2563eb; --primary-dark:#1d4ed8; --green:#16a34a;
+      --orange:#f59e0b; --red:#dc2626; --border:#e5e7eb; --shadow:0 8px 24px rgba(15,23,42,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+    header{position:sticky;top:0;z-index:10;background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;padding:14px 16px;box-shadow:var(--shadow)}
+    header h1{font-size:20px;margin:0;font-weight:800}.sub{font-size:12px;opacity:.9;margin-top:3px}
+    main{padding:14px;max-width:980px;margin:auto}.screen{display:none}.screen.active{display:block}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}.btn{border:none;border-radius:12px;padding:11px 14px;font-weight:800;cursor:pointer;background:var(--primary);color:#fff;box-shadow:0 4px 12px rgba(37,99,235,.2)}
+    .btn:active{transform:scale(.98)}.btn.secondary{background:#e5e7eb;color:#111827;box-shadow:none}.btn.green{background:var(--green)}.btn.red{background:var(--red)}.btn.orange{background:var(--orange);color:#111827}.btn.small{padding:7px 10px;border-radius:10px;font-size:13px}.btn.full{width:100%}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.table-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:var(--shadow);min-height:92px;display:flex;flex-direction:column;justify-content:space-between}
+    .table-card h3{margin:0;font-size:18px}.status{font-size:12px;font-weight:800;border-radius:999px;padding:5px 8px;display:inline-block;margin-top:8px;width:max-content}.free{background:#dcfce7;color:#166534}.busy{background:#ffedd5;color:#9a3412}.total{font-size:17px;font-weight:900;margin-top:8px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
+    .card h2{margin:0 0 10px;font-size:19px}.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px}.tab{white-space:nowrap;border:none;border-radius:999px;padding:10px 14px;font-weight:900;background:#e5e7eb;color:#111827}.tab.active{background:var(--primary);color:#fff}
+    .product{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;border:1px solid var(--border);border-radius:14px;padding:10px;margin-bottom:8px;background:#fff}.product .name{font-weight:900}.product .price{font-size:13px;color:var(--muted);margin-top:2px}.qty{display:flex;gap:8px;align-items:center}.circle{width:34px;height:34px;border:none;border-radius:999px;background:#e5e7eb;font-weight:900;font-size:18px}.qnum{font-weight:900;min-width:22px;text-align:center}.qty-control{display:grid;grid-template-columns:42px 1fr 42px;gap:8px;align-items:center}.qty-control .circle{width:42px;height:42px;background:var(--primary);color:#fff;font-size:22px}.qty-field{text-align:center;font-weight:900;font-size:18px;padding:10px}
+    select,input,textarea{width:100%;border:1px solid var(--border);border-radius:12px;padding:11px;font-size:15px;background:#fff}label{font-size:13px;font-weight:900;color:#374151;display:block;margin:8px 0 5px}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.order-line{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start;border-bottom:1px solid var(--border);padding:10px 0}.order-line:last-child{border-bottom:none}.line-title{font-weight:900}.line-meta{font-size:13px;color:var(--muted);margin-top:3px}.line-total{font-weight:900}.empty{color:var(--muted);text-align:center;padding:22px}.summary{font-size:22px;font-weight:900;text-align:right;margin:12px 0}.footer-note{font-size:12px;color:var(--muted);text-align:center;margin:18px 0}.hidden{display:none!important}
+    .settings-list{display:grid;gap:8px}.settings-item{display:grid;grid-template-columns:1fr 95px 72px;gap:8px;align-items:center}.settings-item b{font-size:14px}.badge{font-size:12px;color:#fff;background:#111827;border-radius:999px;padding:4px 8px}.pay-box{border-top:1px solid var(--border);margin-top:12px;padding-top:12px}.quick-add{border:1px solid var(--border);background:#f9fafb;border-radius:16px;padding:12px}.change-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 0}.change-result{font-size:22px;font-weight:900;text-align:center;border-radius:14px;padding:12px;background:#f3f4f6;margin-top:8px}.change-result.ok{background:#dcfce7;color:#166534}.change-result.warn{background:#fee2e2;color:#991b1b}
+    .prep-card{border:1px solid var(--border);border-radius:16px;padding:12px;margin-bottom:10px;background:#fff}.prep-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.prep-title{font-weight:900;font-size:17px}.prep-dest{font-size:12px;font-weight:900;border-radius:999px;padding:5px 8px;background:#dbeafe;color:#1e40af}.prep-status{font-size:13px;font-weight:900;margin-top:6px}.prep-status.new{color:#dc2626}.prep-status.making{color:#f59e0b}.prep-status.ready{color:#16a34a}.prep-status.done{color:#6b7280}.prep-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+    @media(min-width:720px){.grid{grid-template-columns:repeat(4,1fr)}.product{grid-template-columns:1fr 155px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}}
+  </style>
+
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Καφενείο Λάμπρος" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+</head>
+<body>
+<header>
+  <h1>ΚΑΦΕΝΕΙΟ ΛΑΜΠΡΟΣ</h1>
+  <div class="sub">Παραγγελίες • WhatsApp • Σερβιτόρος • Μπαρ / Κουζίνα</div>
+</header>
+<main>
+  <section id="home" class="screen active">
+    <div class="toolbar">
+      <button class="btn" onclick="showHome()">Τραπέζια</button>
+      <button class="btn orange" onclick="openPrep()">Προς ετοιμασία</button>
+      <button class="btn secondary" onclick="openSettings()">Κατάλογος / Τιμές</button>
+      <button class="btn secondary" onclick="exportData()">Backup</button>
+      <button class="btn secondary" onclick="document.getElementById('importFile').click()">Restore</button>
+      <input id="importFile" class="hidden" type="file" accept="application/json" onchange="importData(event)">
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <h2>Σερβιτόρος</h2>
+      <div class="row">
+        <input id="waiterName" placeholder="Γράψε όνομα σερβιτόρου" oninput="saveWaiterName(false)">
+        <button class="btn green" onclick="saveWaiterName(true)">Αποθήκευση ονόματος</button>
+      </div>
+      <div class="line-meta" style="margin-top:8px">Το όνομα αποθηκεύεται στη συσκευή και μπαίνει αυτόματα σε κάθε παραγγελία / WhatsApp.</div>
+    </div>
+    <div id="tables" class="grid"></div>
+    <div class="footer-note">Αποθηκεύεται αυτόματα στη συσκευή με localStorage.</div>
+  </section>
+
+  <section id="order" class="screen">
+    <div class="toolbar">
+      <button class="btn secondary" onclick="showHome()">← Πίσω</button>
+      <button class="btn green" onclick="saveOrder()">Αποθήκευση</button>
+      <button class="btn green" onclick="sendWhatsAppCurrent()">WhatsApp</button>
+      <button class="btn orange" onclick="sendForPrep()">Αποστολή για ετοιμασία</button>
+      <button class="btn red" onclick="closeTable()">Κλείσιμο τραπεζιού</button>
+    </div>
+    <div class="card">
+      <h2 id="orderTitle">Τραπέζι</h2>
+      <div id="orderWaiterInfo" class="line-meta" style="margin-bottom:10px"></div>
+      <div class="quick-add">
+        <label>Κατηγορία</label>
+        <select id="categorySelect" onchange="selectCategory(this.value)"></select>
+        <label>Προϊόν</label>
+        <select id="productSelect" onchange="renderSelectedOptions()"></select>
+        <div class="row">
+          <div>
+            <label>Επιλογή</label>
+            <select id="optionSelect"></select>
+          </div>
+          <div>
+            <label>Ποσότητα</label>
+            <div class="qty-control">
+              <button class="circle" type="button" onclick="adjustQuickQty(-1)">−</button>
+              <input id="qtyInput" class="qty-field" type="number" min="1" step="1" value="1" oninput="normalizeQuickQty(false)">
+              <button class="circle" type="button" onclick="adjustQuickQty(1)">+</button>
+            </div>
+          </div>
+        </div>
+        <label>Σχόλιο</label>
+        <input id="itemNote" placeholder="π.χ. μέτριος, χωρίς πάγο, έξτρα ψωμί">
+        <button class="btn full" style="margin-top:10px" onclick="addSelectedProduct()">+ Προσθήκη στην παραγγελία</button>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <h2>Τρέχουσα παραγγελία</h2>
+        <div id="orderLines"></div>
+        <div class="summary" id="orderTotal">0,00€</div>
+      </div>
+      <div class="card">
+        <h2>Γενικό σχόλιο</h2>
+        <textarea id="generalNote" rows="5" placeholder="π.χ. πρώτα οι καφέδες, μετά οι μπύρες..."></textarea>
+        <div class="pay-box">
+          <h2>Πληρωμή / Ρέστα</h2>
+          <div class="line-meta">Πάτησε ποσό που σου δίνουν ή γράψε άλλο ποσό.</div>
+          <div class="change-buttons">
+            <button class="btn secondary" onclick="quickPayment(5)">5€</button>
+            <button class="btn secondary" onclick="quickPayment(10)">10€</button>
+            <button class="btn secondary" onclick="quickPayment(20)">20€</button>
+            <button class="btn secondary" onclick="quickPayment(50)">50€</button>
+          </div>
+          <label>Ποσό που δόθηκε</label>
+          <input id="paidAmount" type="number" step="0.01" min="0" placeholder="π.χ. 20" oninput="calcChange()">
+          <div id="changeResult" class="change-result">Ρέστα: 0,00€</div>
+        </div>
+        <div class="toolbar">
+          <button class="btn full" onclick="saveOrder()">Αποθήκευση παραγγελίας</button>
+          <button class="btn full orange" onclick="sendForPrep()">Αποστολή για ετοιμασία</button>
+          <button class="btn full green" onclick="sendWhatsAppCurrent()">Αποστολή WhatsApp</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="prep" class="screen">
+    <div class="toolbar">
+      <button class="btn secondary" onclick="showHome()">← Πίσω</button>
+      <button class="btn green" onclick="renderPrep()">Ανανέωση</button>
+      <button class="btn red" onclick="clearDonePrep()">Καθαρισμός παραδομένων</button>
+    </div>
+    <div class="card">
+      <h2>Παραγγελίες προς ετοιμασία</h2>
+      <p style="color:var(--muted);margin-top:0">Οι καφέδες, μπύρες, αναψυκτικά, ποτά πάνε στο Μπαρ. Οι μεζέδες και τα σνακ πάνε στην Κουζίνα. Από εδώ μπορείς να στείλεις και με WhatsApp.</p>
+      <div id="prepList"></div>
+    </div>
+  </section>
+
+  <section id="settings" class="screen">
+    <div class="toolbar">
+      <button class="btn secondary" onclick="showHome()">← Πίσω</button>
+      <button class="btn green" onclick="saveSettings()">Αποθήκευση τιμών</button>
+      <button class="btn red" onclick="resetAllConfirm()">Μηδενισμός όλων</button>
+    </div>
+    <div class="card">
+      <h2>Κατάλογος / Τιμές</h2>
+      <p style="color:var(--muted);margin-top:0">Άλλαξε τιμές και ονόματα προϊόντων. Οι κατηγορίες μένουν απλές.</p>
+      <div id="settingsList" class="settings-list"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+const KEY='coffeebeer_order_v7';
+const defaultState={
+  tableCount:20,
+  currentTable:null,
+  category:'Καφέδες',
+  waiterName:'',
+  menu:[
+    {id:'coffee_freddo_espresso',cat:'Καφέδες',name:'Freddo Espresso',price:4.00,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_freddo_cappuccino',cat:'Καφέδες',name:'Freddo Cappuccino',price:4.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_espresso_double',cat:'Καφέδες',name:'Espresso Διπλό',price:3.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_espresso_single',cat:'Καφέδες',name:'Espresso Μονό',price:3.00,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_cappuccino_double',cat:'Καφέδες',name:'Cappuccino Διπλό',price:4.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_cappuccino_single',cat:'Καφέδες',name:'Cappuccino Μονό',price:4.00,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_americano',cat:'Καφέδες',name:'Americano',price:3.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_frappe_nes',cat:'Καφέδες',name:'Φραπέ / Nescafe',price:3.00,opts:['Σκέτος','Μέτριος','Γλυκός','Με γάλα','Χωρίς γάλα']},
+    {id:'coffee_latte',cat:'Καφέδες',name:'Latte',price:4.00,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_ellinikos_double',cat:'Καφέδες',name:'Ελληνικός Διπλός',price:3.00,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_ellinikos_single',cat:'Καφέδες',name:'Ελληνικός Μονός',price:2.50,opts:['Σκέτος','Μέτριος','Γλυκός']},
+    {id:'coffee_tea_hot',cat:'Καφέδες',name:'Τσάι Ζεστό',price:2.50,opts:['Κανονικό','Με μέλι','Με λεμόνι']},
+    {id:'coffee_chocolate',cat:'Καφέδες',name:'Σοκολάτα',price:3.50,opts:['Ζεστή','Κρύα']},
+    {id:'soft_softdrinks',cat:'Αναψυκτικά',name:'Αναψυκτικά',price:3.00,opts:['Cola','Πορτοκαλάδα','Λεμονάδα','Σόδα','Sprite']},
+    {id:'soft_granita',cat:'Αναψυκτικά',name:'Γρανίτα',price:4.00,opts:['Κανονικό']},
+    {id:'soft_juice',cat:'Αναψυκτικά',name:'Χυμοί',price:3.00,opts:['Πορτοκάλι','Βύσσινο','Ροδάκινο','Ανάμεικτος']},
+    {id:'soft_fresh_orange',cat:'Αναψυκτικά',name:'Φυσικός χυμός πορτοκάλι',price:4.50,opts:['Κανονικό']},
+    {id:'soft_redbull',cat:'Αναψυκτικά',name:'Red Bull',price:5.00,opts:['Κανονικό']},
+    {id:'water_vikos_sparkling',cat:'Αναψυκτικά',name:'Βίκος ανθρακούχο 330ml',price:3.50,opts:['Κρύο','Θερμοκρασία δωματίου']},
+    {id:'water_vikos_1l',cat:'Αναψυκτικά',name:'Βίκος μεταλλικό 1 λίτρο',price:1.50,opts:['Κρύο','Θερμοκρασία δωματίου']},
+    {id:'water_zagori_500',cat:'Αναψυκτικά',name:'Νερό 500ml',price:0.50,opts:['Κρύο','Θερμοκρασία δωματίου']},
+    {id:'beer_alpha_500',cat:'Μπύρες',name:'Άλφα 500ml',price:4.50,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_mythos_500',cat:'Μπύρες',name:'Μύθος 500ml',price:5.00,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_amstel_500',cat:'Μπύρες',name:'Amstel 500ml',price:4.50,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_heineken_500',cat:'Μπύρες',name:'Heineken 500ml',price:5.00,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_kaiser_500',cat:'Μπύρες',name:'Kaiser 500ml',price:5.00,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_vergina_500',cat:'Μπύρες',name:'Βεργίνα 500ml',price:4.00,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_vergina_free',cat:'Μπύρες',name:'Βεργίνα Free 500ml',price:4.50,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_vergina_radler',cat:'Μπύρες',name:'Βεργίνα Radler 500ml',price:4.50,opts:['Παγωμένη','Ποτήρι']},
+    {id:'beer_vergina_weiss',cat:'Μπύρες',name:'Βεργίνα Weiss 500ml',price:4.50,opts:['Παγωμένη','Ποτήρι']},
+    {id:'meze_small',cat:'Μεζές',name:'Μικρός μεζές',price:6.00,opts:['Κανονικός','Χωρίς πικάντικο','Έξτρα ψωμί']},
+    {id:'meze_large',cat:'Μεζές',name:'Μεγάλος μεζές',price:10.00,opts:['Κανονικός','Χωρίς πικάντικο','Έξτρα ψωμί']},
+    {id:'food_baguette',cat:'Σνακ',name:'Μπαγκέτα',price:3.50,opts:['Κανονικό']},
+    {id:'food_hamburger',cat:'Σνακ',name:'Hamburger',price:6.00,opts:['Κανονικό']},
+    {id:'food_club',cat:'Σνακ',name:'Club Sandwich',price:6.00,opts:['Κανονικό']},
+    {id:'food_toast',cat:'Σνακ',name:'Τοστ',price:3.00,opts:['Κανονικό']},
+    {id:'drink_tsipouro_meze',cat:'Ούζο / Τσίπουρο',name:'Τσίπουρο + μεζές',price:6.00,opts:['Κανονικό']},
+    {id:'drink_tsipouro_bottle',cat:'Ούζο / Τσίπουρο',name:'Τσίπουρο φιάλη 200ml',price:7.00,opts:['Κανονικό']},
+    {id:'drink_tsipouro_glass',cat:'Ούζο / Τσίπουρο',name:'Τσίπουρο ποτήρι',price:3.00,opts:['Κανονικό']},
+    {id:'drink_ouzo_bottle',cat:'Ούζο / Τσίπουρο',name:'Ούζο φιάλη 200ml',price:7.00,opts:['Κανονικό']},
+    {id:'drink_ouzo_glass',cat:'Ούζο / Τσίπουρο',name:'Ούζο ποτήρι',price:3.00,opts:['Κανονικό']},
+    {id:'drink_ouzo_tsipouro_carafe',cat:'Ούζο / Τσίπουρο',name:'Ούζο / Τσίπουρο καραφάκι 200ml',price:6.00,opts:['Ούζο','Τσίπουρο']},
+    {id:'wine_rose_500',cat:'Κρασί',name:'Αμπέλου Τέχνης Ροζέ ημίξηρος 500ml',price:8.00,opts:['Κανονικό']},
+    {id:'wine_semisweet_500',cat:'Κρασί',name:'Αμπέλου Τέχνης Ημίγλυκος 500ml',price:8.00,opts:['Κανονικό']},
+    {id:'wine_red_dry_500',cat:'Κρασί',name:'Αμπέλου Τέχνης Ερυθρός ξηρός 500ml',price:8.00,opts:['Κανονικό']},
+    {id:'wine_glass',cat:'Κρασί',name:'Ποτήρι κρασί',price:5.00,opts:['Ροζέ ημίξηρος','Ημίγλυκος','Ερυθρός ξηρός']},
+    {id:'spirit_absolut',cat:'Ποτά',name:'Absolut',price:7.00,opts:['Κανονικό']},
+    {id:'spirit_stolichnaya',cat:'Ποτά',name:'Stolichnaya',price:7.00,opts:['Κανονικό']},
+    {id:'spirit_serkova',cat:'Ποτά',name:'Serkova',price:7.00,opts:['Κανονικό']},
+    {id:'spirit_sobieski',cat:'Ποτά',name:'Sobieski',price:7.00,opts:['Κανονικό']},
+    {id:'spirit_baileys',cat:'Ποτά',name:'Baileys',price:6.50,opts:['Κανονικό']},
+    {id:'spirit_skinos',cat:'Ποτά',name:'Skinos Mastiha',price:6.50,opts:['Κανονικό']},
+    {id:'spirit_jagermeister',cat:'Ποτά',name:'Jägermeister',price:7.00,opts:['Κανονικό']},
+    {id:'spirit_metaxa',cat:'Ποτά',name:'Metaxa',price:6.50,opts:['Κανονικό']},
+    {id:'spirit_martini',cat:'Ποτά',name:'Martini',price:6.50,opts:['Κανονικό']},
+    {id:'spirit_bacardi',cat:'Ποτά',name:'Bacardi',price:7.00,opts:['Κανονικό']},
+    {id:'spirit_havana',cat:'Ποτά',name:'Havana',price:7.00,opts:['Κανονικό']},
+    {id:'spirit_kahlua',cat:'Ποτά',name:'Kahlua',price:3.00,opts:['Κανονικό']},
+    {id:'whisky_johnnie_red',cat:'Ουίσκι / Gin',name:'Johnnie Red',price:7.00,opts:['Κανονικό']},
+    {id:'whisky_dewars',cat:'Ουίσκι / Gin',name:'Dewar’s',price:7.00,opts:['Κανονικό']},
+    {id:'whisky_cutty_sark',cat:'Ουίσκι / Gin',name:'Cutty Sark',price:7.00,opts:['Κανονικό']},
+    {id:'whisky_famous',cat:'Ουίσκι / Gin',name:'Famous',price:7.00,opts:['Κανονικό']},
+    {id:'whisky_haig',cat:'Ουίσκι / Gin',name:'Haig',price:7.00,opts:['Κανονικό']},
+    {id:'whisky_johnnie_black',cat:'Ουίσκι / Gin',name:'Johnnie Black',price:9.00,opts:['Κανονικό']},
+    {id:'whisky_chivas',cat:'Ουίσκι / Gin',name:'Chivas',price:8.00,opts:['Κανονικό']},
+    {id:'whisky_jameson',cat:'Ουίσκι / Gin',name:'Jameson',price:7.00,opts:['Κανονικό']},
+    {id:'whisky_tullamore',cat:'Ουίσκι / Gin',name:'Tullamore Dew',price:8.00,opts:['Κανονικό']},
+    {id:'whisky_jack_daniels',cat:'Ουίσκι / Gin',name:'Jack Daniel’s',price:9.00,opts:['Κανονικό']},
+    {id:'whisky_ballantines',cat:'Ουίσκι / Gin',name:'Ballantine’s',price:9.00,opts:['Κανονικό']},
+    {id:'gin_roku',cat:'Ουίσκι / Gin',name:'Roku Gin',price:10.00,opts:['Κανονικό']},
+    {id:'gin_hendricks',cat:'Ουίσκι / Gin',name:'Hendrick’s',price:10.00,opts:['Κανονικό']}
+  ],
+  orders:{},
+  prepOrders:[]
+};
+let state=load();
+if(!state.prepOrders)state.prepOrders=[];
+
+mergeDefaultMenu();
+function mergeDefaultMenu(){
+  const byId=new Set((state.menu||[]).map(x=>x.id));
+  let changed=false;
+  defaultState.menu.forEach(item=>{
+    if(!byId.has(item.id)){
+      state.menu.push(structuredClone(item));
+      changed=true;
+    }
+  });
+  if(changed)persist();
+}
+function load(){try{return {...structuredClone(defaultState),...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){return structuredClone(defaultState)}}
+function persist(){localStorage.setItem(KEY,JSON.stringify(state))}
+function saveWaiterName(showAlert){const inp=document.getElementById('waiterName');if(!inp)return;state.waiterName=(inp.value||'').trim();persist();if(showAlert)alert('Το όνομα σερβιτόρου αποθηκεύτηκε.')}
+function currentWaiter(){return (state.waiterName||'').trim()}
+function money(n){return Number(n||0).toLocaleString('el-GR',{style:'currency',currency:'EUR'})}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function showHome(){state.currentTable=null;persist();renderTables();show('home')}
+function renderTables(){const waiter=document.getElementById('waiterName');if(waiter)waiter.value=currentWaiter();const wrap=document.getElementById('tables');wrap.innerHTML='';for(let i=1;i<=state.tableCount;i++){const order=state.orders[i];const total=(order?.items||[]).reduce((s,x)=>s+x.qty*x.price,0);const busy=order&&order.items&&order.items.length>0;const div=document.createElement('div');div.className='table-card';div.onclick=()=>openTable(i);div.innerHTML=`<div><h3>Τραπέζι ${i}</h3><span class="status ${busy?'busy':'free'}">${busy?'Έχει παραγγελία':'Ελεύθερο'}</span></div><div class="total">${money(total)}</div>`;wrap.appendChild(div)}}
+function openTable(n){state.currentTable=n;if(!state.orders[n])state.orders[n]={items:[],note:''};state.category='Καφέδες';persist();renderOrder();show('order')}
+function cats(){return [...new Set(state.menu.map(m=>m.cat))]}
+function renderOrder(){document.getElementById('orderTitle').textContent='Τραπέζι '+state.currentTable;const wi=document.getElementById('orderWaiterInfo');if(wi)wi.textContent=currentWaiter()?'Σερβιτόρος: '+currentWaiter():'Δεν έχει οριστεί σερβιτόρος';document.getElementById('generalNote').value=state.orders[state.currentTable]?.note||'';const paid=document.getElementById('paidAmount');if(paid)paid.value='';renderDropdowns();renderLines()}
+function lineKey(item,opt,note){return item.id+'|'+(opt||'')+'|'+(note||'')}
+function renderDropdowns(){
+  const catSel=document.getElementById('categorySelect');
+  const prodSel=document.getElementById('productSelect');
+  if(!catSel||!prodSel)return;
+  const allCats=cats();
+  if(!allCats.includes(state.category))state.category=allCats[0]||'';
+  catSel.innerHTML=allCats.map(c=>`<option ${c===state.category?'selected':''}>${c}</option>`).join('');
+  const products=state.menu.filter(m=>m.cat===state.category);
+  prodSel.innerHTML=products.map(m=>`<option value="${m.id}">${m.name} - ${money(m.price)}</option>`).join('');
+  renderSelectedOptions();
+}
+function selectCategory(cat){state.category=cat;persist();renderDropdowns()}
+function renderSelectedOptions(){
+  const prodSel=document.getElementById('productSelect');
+  const optSel=document.getElementById('optionSelect');
+  if(!prodSel||!optSel)return;
+  const item=state.menu.find(m=>m.id===prodSel.value);
+  const opts=(item&&item.opts&&item.opts.length)?item.opts:['Κανονικό'];
+  optSel.innerHTML=opts.map(o=>`<option>${o}</option>`).join('');
+}
+function normalizeQuickQty(force){
+  const inp=document.getElementById('qtyInput');
+  if(!inp)return 1;
+  let v=parseInt(inp.value||'1',10);
+  if(isNaN(v)||v<1)v=1;
+  if(force||String(inp.value)!==String(v))inp.value=v;
+  return v;
+}
+function adjustQuickQty(delta){
+  const inp=document.getElementById('qtyInput');
+  if(!inp)return;
+  const current=normalizeQuickQty(true);
+  inp.value=Math.max(1,current+delta);
+}
+function addSelectedProduct(){
+  const prodSel=document.getElementById('productSelect');
+  const item=state.menu.find(m=>m.id===prodSel.value);
+  if(!item)return alert('Διάλεξε προϊόν.');
+  const opt=document.getElementById('optionSelect')?.value||'';
+  const note=document.getElementById('itemNote')?.value.trim()||'';
+  const qty=normalizeQuickQty(true);
+  const key=lineKey(item,opt,note);
+  const order=state.orders[state.currentTable];
+  let line=order.items.find(x=>x.key===key);
+  if(line){line.qty+=qty}else{order.items.push({key,id:item.id,name:item.name,price:Number(item.price),qty,opt,note})}
+  persist();renderLines();renderTables();
+  document.getElementById('itemNote').value='';
+  document.getElementById('qtyInput').value=1;
+}
+function changeQty(key,delta){const order=state.orders[state.currentTable];const line=order.items.find(x=>x.key===key);if(!line)return;line.qty+=delta;if(line.qty<=0)order.items=order.items.filter(x=>x.key!==key);persist();renderLines();renderTables()}
+function getOrderTotal(){const order=state.orders[state.currentTable]||{items:[]};return (order.items||[]).reduce((s,x)=>s+x.qty*x.price,0)}
+function renderLines(){const order=state.orders[state.currentTable]||{items:[]};const wrap=document.getElementById('orderLines');if(!order.items.length){wrap.innerHTML='<div class="empty">Δεν υπάρχει παραγγελία ακόμη.</div>';document.getElementById('orderTotal').textContent=money(0);calcChange();return}wrap.innerHTML='';let total=0;order.items.forEach(l=>{total+=l.qty*l.price;const div=document.createElement('div');div.className='order-line';div.innerHTML=`<div><div class="line-title">${l.qty} × ${l.name}</div><div class="line-meta">${l.opt||''}${l.note?' • '+l.note:''}</div><div class="qty" style="margin-top:7px"><button class="circle" onclick="changeQty('${l.key}',-1)">−</button><span class="qnum">${l.qty}</span><button class="circle" onclick="changeQty('${l.key}',1)">+</button></div></div><div class="line-total">${money(l.qty*l.price)}</div>`;wrap.appendChild(div)});document.getElementById('orderTotal').textContent=money(total);calcChange()}
+function quickPayment(amount){const inp=document.getElementById('paidAmount');if(!inp)return;inp.value=amount;calcChange()}
+function calcChange(){const out=document.getElementById('changeResult');const inp=document.getElementById('paidAmount');if(!out||!inp)return;const total=getOrderTotal();const paid=Number(inp.value||0);out.className='change-result';if(!paid){out.textContent='Ρέστα: '+money(0);return}const change=paid-total;if(change>=0){out.classList.add('ok');out.textContent='Ρέστα: '+money(change)}else{out.classList.add('warn');out.textContent='Λείπουν: '+money(Math.abs(change))}}
+function saveOrder(){if(!state.currentTable)return;state.orders[state.currentTable].note=document.getElementById('generalNote').value.trim();state.orders[state.currentTable].waiter=currentWaiter();persist();alert('Η παραγγελία αποθηκεύτηκε.');renderTables()}
+function destinationFor(cat){return (cat==='Μεζές'||cat==='Σνακ')?'Κουζίνα':'Μπαρ'}
+function sendForPrep(){
+  if(!state.currentTable)return;
+  const order=state.orders[state.currentTable];
+  if(!order||!order.items||!order.items.length)return alert('Δεν υπάρχει παραγγελία για αποστολή.');
+  order.note=document.getElementById('generalNote').value.trim();
+  order.waiter=currentWaiter();
+  const groups={};
+  order.items.forEach(line=>{
+    const menuItem=state.menu.find(m=>m.id===line.id);
+    const dest=destinationFor(menuItem?.cat||'');
+    if(!groups[dest])groups[dest]=[];
+    groups[dest].push({...line,cat:menuItem?.cat||''});
+  });
+  Object.keys(groups).forEach(dest=>{
+    state.prepOrders.unshift({
+      id:'prep_'+Date.now()+'_'+Math.random().toString(16).slice(2),
+      table:state.currentTable,
+      dest,
+      status:'Νέα',
+      createdAt:new Date().toLocaleString('el-GR'),
+      waiter:order.waiter||currentWaiter(),
+      note:order.note||'',
+      items:groups[dest]
+    });
+  });
+  persist();
+  alert('Η παραγγελία στάλθηκε για ετοιμασία.');
+}
+
+function formatOrderMessage(table, dest, items, note, createdAt, waiter){
+  const lines=[];
+  lines.push(`ΠΑΡΑΓΓΕΛΙΑ - ΤΡΑΠΕΖΙ ${table}`);
+  if(dest) lines.push(`Προς: ${dest}`);
+  if(createdAt) lines.push(`Ώρα: ${createdAt}`);
+  if(waiter) lines.push(`Σερβιτόρος: ${waiter}`);
+  lines.push('');
+  let total=0;
+  (items||[]).forEach(l=>{
+    total += Number(l.qty||0)*Number(l.price||0);
+    let row = `${l.qty} x ${l.name}`;
+    if(l.opt) row += ` (${l.opt})`;
+    if(l.note) row += ` - ${l.note}`;
+    row += ` = ${money(Number(l.qty||0)*Number(l.price||0))}`;
+    lines.push(row);
+  });
+  if(note){lines.push('');lines.push('Σχόλιο: '+note)}
+  lines.push('');
+  lines.push('Σύνολο: '+money(total));
+  return lines.join('\n');
+}
+function openWhatsAppMessage(text){
+  const url='https://wa.me/?text='+encodeURIComponent(text);
+  window.open(url,'_blank');
+}
+function sendWhatsAppCurrent(){
+  if(!state.currentTable)return;
+  const order=state.orders[state.currentTable];
+  if(!order||!order.items||!order.items.length)return alert('Δεν υπάρχει παραγγελία για αποστολή.');
+  order.note=document.getElementById('generalNote').value.trim();
+  order.waiter=currentWaiter();
+  persist();
+  const msg=formatOrderMessage(state.currentTable,'Μπαρ / Κουζίνα',order.items,order.note,new Date().toLocaleString('el-GR'),order.waiter||currentWaiter());
+  openWhatsAppMessage(msg);
+}
+function sendWhatsAppPrep(id){
+  const p=(state.prepOrders||[]).find(x=>x.id===id);
+  if(!p)return;
+  const msg=formatOrderMessage(p.table,p.dest,p.items,p.note,p.createdAt,p.waiter||'');
+  openWhatsAppMessage(msg);
+}
+
+function openPrep(){renderPrep();show('prep')}
+function statusClass(st){return st==='Νέα'?'new':st==='Ετοιμάζεται'?'making':st==='Έτοιμη'?'ready':'done'}
+function setPrepStatus(id,status){const p=state.prepOrders.find(x=>x.id===id);if(!p)return;p.status=status;persist();renderPrep()}
+function renderPrep(){
+  const wrap=document.getElementById('prepList');
+  if(!wrap)return;
+  const list=state.prepOrders||[];
+  if(!list.length){wrap.innerHTML='<div class="empty">Δεν υπάρχουν παραγγελίες προς ετοιμασία.</div>';return}
+  wrap.innerHTML='';
+  list.forEach(p=>{
+    const div=document.createElement('div');div.className='prep-card';
+    const lines=(p.items||[]).map(l=>`<div class="order-line"><div><div class="line-title">${l.qty} × ${l.name}</div><div class="line-meta">${l.opt||''}${l.note?' • '+l.note:''}</div></div><div class="line-total">${money(l.qty*l.price)}</div></div>`).join('');
+    div.innerHTML=`<div class="prep-head"><div><div class="prep-title">Τραπέζι ${p.table}</div><div class="line-meta">${p.createdAt}</div>${p.waiter?`<div class="line-meta"><b>Σερβιτόρος:</b> ${p.waiter}</div>`:''}<div class="prep-status ${statusClass(p.status)}">${p.status}</div></div><span class="prep-dest">${p.dest}</span></div>${lines}${p.note?`<div class="line-meta" style="margin-top:8px"><b>Σχόλιο:</b> ${p.note}</div>`:''}<div class="prep-actions"><button class="btn small green" onclick="sendWhatsAppPrep('${p.id}')">WhatsApp</button><button class="btn small" onclick="setPrepStatus('${p.id}','Ετοιμάζεται')">Ετοιμάζεται</button><button class="btn small green" onclick="setPrepStatus('${p.id}','Έτοιμη')">Έτοιμη</button><button class="btn small secondary" onclick="setPrepStatus('${p.id}','Παραδόθηκε')">Παραδόθηκε</button><button class="btn small red" onclick="deletePrep('${p.id}')">Σβήσε</button></div>`;
+    wrap.appendChild(div);
+  });
+}
+function deletePrep(id){if(confirm('Να διαγραφεί αυτή η παραγγελία από την ετοιμασία;')){state.prepOrders=(state.prepOrders||[]).filter(x=>x.id!==id);persist();renderPrep()}}
+function clearDonePrep(){state.prepOrders=(state.prepOrders||[]).filter(x=>x.status!=='Παραδόθηκε');persist();renderPrep()}
+
+function closeTable(){if(!state.currentTable)return;if(confirm('Να κλείσει το τραπέζι '+state.currentTable+'; Θα διαγραφεί η παραγγελία.')){delete state.orders[state.currentTable];persist();showHome()}}
+function openSettings(){renderSettings();show('settings')}
+function renderSettings(){const wrap=document.getElementById('settingsList');wrap.innerHTML='';state.menu.forEach((m,i)=>{const div=document.createElement('div');div.className='settings-item';div.innerHTML=`<div><span class="badge">${m.cat}</span><input data-i="${i}" data-f="name" value="${m.name}" style="margin-top:6px"></div><input data-i="${i}" data-f="price" type="number" step="0.10" value="${m.price}"><button class="btn small red" onclick="removeItem(${i})">Σβήσε</button>`;wrap.appendChild(div)});const add=document.createElement('div');add.className='card';add.style.boxShadow='none';add.innerHTML=`<h2>Προσθήκη προϊόντος</h2><div class="row"><select id="newCat">${cats().map(c=>`<option>${c}</option>`).join('')}</select><input id="newPrice" type="number" step="0.10" placeholder="Τιμή"></div><label>Όνομα προϊόντος</label><input id="newName" placeholder="π.χ. Νέα μπύρα"><button class="btn full" style="margin-top:10px" onclick="addNewItem()">Προσθήκη</button>`;wrap.appendChild(add)}
+function saveSettings(){document.querySelectorAll('#settingsList input[data-i]').forEach(inp=>{const i=Number(inp.dataset.i);const f=inp.dataset.f;state.menu[i][f]=f==='price'?Number(inp.value||0):inp.value});persist();alert('Οι τιμές αποθηκεύτηκαν.');renderSettings();renderTables()}
+function removeItem(i){if(confirm('Να διαγραφεί αυτό το προϊόν;')){state.menu.splice(i,1);persist();renderSettings()}}
+function addNewItem(){const name=document.getElementById('newName').value.trim();const price=Number(document.getElementById('newPrice').value||0);const cat=document.getElementById('newCat').value;if(!name)return alert('Γράψε όνομα προϊόντος.');state.menu.push({id:'custom_'+Date.now(),cat,name,price,opts:['Κανονικό']});persist();renderSettings()}
+function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='coffeebeer_order_backup.json';a.click();URL.revokeObjectURL(a.href)}
+function importData(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);persist();renderTables();alert('Το backup φορτώθηκε.')}catch(err){alert('Το αρχείο δεν είναι σωστό.')}};r.readAsText(file)}
+function resetAllConfirm(){if(confirm('Προσοχή: Θα διαγραφούν όλες οι παραγγελίες και οι αλλαγές. Συνέχεια;')){localStorage.removeItem(KEY);state=structuredClone(defaultState);renderTables();renderSettings();alert('Έγινε μηδενισμός.')}}
+renderTables();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./sw.js').catch(function(err){ console.log('ServiceWorker error', err); });
+  });
+}
+</script>
+</body>
+</html>
