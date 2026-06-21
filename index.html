@@ -27,6 +27,14 @@
     .prep-card{border:1px solid var(--border);border-radius:16px;padding:12px;margin-bottom:10px;background:#fff}.prep-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.prep-title{font-weight:900;font-size:17px}.prep-dest{font-size:12px;font-weight:900;border-radius:999px;padding:5px 8px;background:#dbeafe;color:#1e40af}.prep-status{font-size:13px;font-weight:900;margin-top:6px}.prep-status.new{color:#dc2626}.prep-status.making{color:#f59e0b}.prep-status.ready{color:#16a34a}.prep-status.done{color:#6b7280}.prep-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
     @media(min-width:720px){.grid{grid-template-columns:repeat(4,1fr)}.product{grid-template-columns:1fr 155px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}}
   </style>
+
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Καφενείο Λάμπρος" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
 </head>
 <body>
 <header>
@@ -414,6 +422,14 @@ function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'
 function importData(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);persist();renderTables();alert('Το backup φορτώθηκε.')}catch(err){alert('Το αρχείο δεν είναι σωστό.')}};r.readAsText(file)}
 function resetAllConfirm(){if(confirm('Προσοχή: Θα διαγραφούν όλες οι παραγγελίες και οι αλλαγές. Συνέχεια;')){localStorage.removeItem(KEY);state=structuredClone(defaultState);renderTables();renderSettings();alert('Έγινε μηδενισμός.')}}
 renderTables();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./sw.js').catch(function(err){ console.log('ServiceWorker error', err); });
+  });
+}
 </script>
 </body>
 </html>
