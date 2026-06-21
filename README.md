@@ -1,11 +1,13 @@
-# CoffeeBeer Order V11 PWA
+# CoffeeBeer Order V12 PWA
 
-Έτοιμη έκδοση για εγκατάσταση στο κινητό ως Progressive Web App.
+Έκδοση για εγκατάσταση στο κινητό χωρίς φάκελο icons.
 
-Ανεβάστε όλα τα αρχεία στο GitHub repository root:
+Ανέβασε στη ρίζα του GitHub repository όλα αυτά:
+
 - index.html
 - manifest.webmanifest
 - sw.js
-- φάκελος icons
+- icon-192.png
+- icon-512.png
 
-Μετά ανοίξτε το GitHub Pages link από Chrome και επιλέξτε Install app ή Προσθήκη στην αρχική οθόνη.
+Μετά άνοιξε το GitHub Pages link από Chrome και πάτησε Εγκατάσταση εφαρμογής ή Προσθήκη στην αρχική οθόνη.
