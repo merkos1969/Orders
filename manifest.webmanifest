@@ -1,6 +1,6 @@
 {
   "name": "Καφενείο Λάμπρος - Παραγγελίες",
-  "short_name": "Λάμπρος Orders",
+  "short_name": "Μέρκος app",
   "description": "Εφαρμογή παραγγελιών για καφέδες, μπύρες, αναψυκτικά, μεζέδες και WhatsApp.",
   "start_url": "./index.html",
   "scope": "./",
