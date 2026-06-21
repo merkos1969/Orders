@@ -1,5 +1,5 @@
 {
-  "name": "MerkosApp",
+  "name": "Βοηθός σερβιτόρου",
   "short_name": "Merkos app",
   "description": "Εφαρμογή παραγγελιών για καφέδες, μπύρες, αναψυκτικά, μεζέδες και WhatsApp.",
   "start_url": "./index.html",
